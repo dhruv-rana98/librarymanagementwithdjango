@@ -1,13 +1,26 @@
 import "./App.css";
-import Header from "./components/Header";
-import RegistrationForm from "./components/RegistrationForm";
-import LoginForm from "./components/LoginForm";
+import HomePage from "./pages/HomePage";
+import Registration from "./pages/Login";
+import Login from "./pages/Registration";
+import { Route, Switch } from "react-router-dom";
+import Error from "./pages/Error";
 function App() {
   return (
     <div className="App">
-      <Header />
-      <RegistrationForm />
-      <LoginForm />
+      <Switch>
+        <Route path="/" exact>
+          <HomePage />
+        </Route>
+        <Route path="/login" exact>
+          <Login />
+        </Route>
+        <Route path="/register" exact>
+          <Registration />
+        </Route>
+        <Route path="*" exact>
+          <Error />
+        </Route>
+      </Switch>
     </div>
   );
 }
