@@ -5,6 +5,7 @@ import Registration from "./pages/Registration";
 import BookList from "./pages/BookList";
 import { Route, Switch } from "react-router-dom";
 import Error from "./pages/Error";
+import Admin from "./pages/Admin";
 function App() {
   return (
     <div className="App">
@@ -20,6 +21,9 @@ function App() {
         </Route>
         <Route path="/books" exact>
           <BookList />
+        </Route>
+        <Route path="/admin" exact>
+          <Admin />
         </Route>
         <Route path="*" exact>
           <Error />
