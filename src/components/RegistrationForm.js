@@ -6,7 +6,7 @@ function RegistrationForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
-
+  const [response, setResponse] = useState();
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     if (id === "name") {
@@ -27,7 +27,21 @@ function RegistrationForm() {
   };
 
   const handleSubmit = () => {
-    console.log(name, email, password, isAdmin);
+    fetch("http://127.0.0.1:8000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        AdminName: name,
+        AdminPassword: password,
+        isAdmin: isAdmin,
+        AdminEmail: email,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => setResponse(data))
+      .catch((err) => setResponse(err));
   };
 
   return (
@@ -103,6 +117,7 @@ function RegistrationForm() {
           Register
         </button>
       </div>
+      {response ? <h1>{response}</h1> : ""}
     </div>
   );
 }
