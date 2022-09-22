@@ -8,7 +8,8 @@ const LoginForm = (props) => {
   const [submit, setSubmit] = useState(false);
   const [users, setUsers] = useState([]);
   const [response, setResponse] = useState(false);
-  const [error, setError] = useState(null);
+  const [filteredUser, setFilteredUser] = useState([]);
+  const [error, setError] = useState(false);
   const emailChangeHandler = (e) => {
     setEmail(e.target.value);
   };
@@ -22,7 +23,7 @@ const LoginForm = (props) => {
       .then((data) => {
         setUsers(data);
       })
-      .catch((err) => setError(err));
+      .catch((err) => console.log(err));
   }, []);
   const onSubmitHandler = (e) => {
     e.preventDefault();
@@ -32,9 +33,13 @@ const LoginForm = (props) => {
     const fetchedList = users.filter((user) => {
       return user.AdminEmail === email && user.AdminPassword === password;
     });
-    if (fetchedList.length === 1 && fetchedList.isAdmin === 1) {
+    setFilteredUser(fetchedList);
+    console.log(fetchedList[0].isAdmin);
+    console.log(filteredUser[0].length);
+    if (filteredUser.length === 1 && filteredUser[0].isAdmin === true) {
+      console.log("test");
       history.push("/admin");
-    } else if (fetchedList.length === 1 && fetchedList.isAdmin === 0) {
+    } else if (filteredUser.length === 1 && filteredUser[0].isAdmin === false) {
       history.push("/student");
     } else {
       setResponse(false);
@@ -82,7 +87,7 @@ const LoginForm = (props) => {
       </form>
       <div className="output">
         {response && <p>Sending to the library page, please wait.</p>}
-        {error && <p>error</p>}
+        {error && <p>{error}</p>}
       </div>
     </div>
   );
