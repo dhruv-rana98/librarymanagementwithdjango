@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-
+import React, { useEffect, useRef, useState, useContext } from "react";
+import MyContext from "../store/MyContext";
 const AdminPanel = () => {
   const [books, setBooks] = useState([]);
   const [bookLoading, setBookLoading] = useState(false);
@@ -15,7 +15,12 @@ const AdminPanel = () => {
   const updateBookName = useRef();
   const updateBookAuthor = useRef();
   const updateBookCategory = useRef();
-
+  const ctx = useContext(MyContext);
+  useEffect(() => {
+    if (!ctx.isLoggedIn) {
+      ctx.history.replace("/login");
+    }
+  }, [ctx.history, ctx.isLoggedIn]);
   useEffect(() => {
     setBookLoading(true);
     fetch("http://127.0.0.1:8000/books")

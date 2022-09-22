@@ -1,8 +1,7 @@
-import React, { useState, memo, useEffect } from "react";
+import React, { useState, memo, useEffect, useContext } from "react";
 import "./style.css";
-import { useHistory } from "react-router-dom";
-const LoginForm = (props) => {
-  const history = useHistory();
+import MyContext from "../store/MyContext";
+const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submit, setSubmit] = useState(false);
@@ -10,13 +9,13 @@ const LoginForm = (props) => {
   const [response, setResponse] = useState(false);
   const [filteredUser, setFilteredUser] = useState([]);
   const [error, setError] = useState(false);
+  const ctx = useContext(MyContext);
   const emailChangeHandler = (e) => {
     setEmail(e.target.value);
   };
   const passwordChangeHandler = (e) => {
     setPassword(e.target.value);
   };
-
   useEffect(() => {
     fetch("http://127.0.0.1:8000/users")
       .then((response) => response.json())
@@ -24,23 +23,18 @@ const LoginForm = (props) => {
         setUsers(data);
       })
       .catch((err) => console.log(err));
-  }, []);
-  const onSubmitHandler = (e) => {
-    e.preventDefault();
-    console.log(email, password);
-    console.log(users);
-
     const fetchedList = users.filter((user) => {
       return user.AdminEmail === email && user.AdminPassword === password;
     });
     setFilteredUser(fetchedList);
-    console.log(fetchedList[0].isAdmin);
-    console.log(filteredUser[0].length);
+  }, [ctx.isLoggedIn, ctx.history, email, password, users]);
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
     if (filteredUser.length === 1 && filteredUser[0].isAdmin === true) {
-      console.log("test");
-      history.push("/admin");
-    } else if (filteredUser.length === 1 && filteredUser[0].isAdmin === false) {
-      history.push("/student");
+      ctx.history.push("/admin");
+    }
+    if (filteredUser.length === 1 && filteredUser[0].isAdmin === false) {
+      ctx.history.push("/student");
     } else {
       setResponse(false);
       setError("Duplicate records found, please contact with admin to update");
@@ -82,7 +76,9 @@ const LoginForm = (props) => {
           />
         </div>
         <div>
-          <button disabled={!submit}>Submit</button>
+          <button disabled={!submit} onClick={ctx.login}>
+            Submit
+          </button>
         </div>
       </form>
       <div className="output">
